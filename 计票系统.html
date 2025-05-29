@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>选举实时计票系统</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0000FF;
+      font-family: 'SimSun', 'Times New Roman', serif;
+      color: white;
+      font-size: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      max-width: 800px;
+    }
+    .title {
+      margin-bottom: 20px;
+      font-size: 54px;
+      text-align: center;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+    }
+    .row div:first-child {
+      font-size: 54px;
+      cursor: pointer;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .control-row {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    button {
+      font-family: 'SimSun', 'Times New Roman', serif;
+      font-size: 28px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    input {
+      font-size: 28px;
+      font-family: 'SimSun', 'Times New Roman', serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">北京大学青年天文学会<br>2025年选举大会</div>
+    <div id="voteContainer"></div>
+  </div>
+
+  <div class="control-row" id="controlRow">
+    <input type="text" id="newName" placeholder="候选人姓名">
+    <button onclick="addCandidate()">添加候选人</button>
+    <button onclick="removeCandidate()">移除最后一位</button>
+    <button onclick="finalizeCandidates()">确定</button>
+  </div>
+
+  <script>
+    const voteContainer = document.getElementById('voteContainer');
+    const controlRow = document.getElementById('controlRow');
+    let candidates = [];
+
+    function render() {
+      voteContainer.innerHTML = '';
+      candidates.forEach((candidate, index) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const name = document.createElement('div');
+        name.textContent = candidate.name;
+        name.onclick = () => {
+          candidate.votes--;
+          if (candidate.votes < 0) candidate.votes = 0;
+          render();
+        };
+
+        const vote = document.createElement('div');
+        vote.textContent = candidate.votes + '票';
+        vote.onclick = () => {
+          candidate.votes++;
+          render();
+        };
+
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'buttons';
+        btnGroup.appendChild(vote);
+
+        row.appendChild(name);
+        row.appendChild(btnGroup);
+
+        voteContainer.appendChild(row);
+      });
+    }
+
+    function addCandidate() {
+      const name = document.getElementById('newName').value.trim();
+      if (name) {
+        candidates.push({ name: name, votes: 0 });
+        document.getElementById('newName').value = '';
+        render();
+      }
+    }
+
+    function removeCandidate() {
+      candidates.pop();
+      render();
+    }
+
+    function finalizeCandidates() {
+      controlRow.remove();
+    }
+  </script>
+</body>
+</html>
