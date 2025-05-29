@@ -15,38 +15,59 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
     .container {
       display: flex;
       flex-direction: column;
-      width: 80%;
-      max-width: 800px;
+      width: 90%;
+      max-width: 1200px;
+      height: 90vh;
+      overflow-y: auto;
+      justify-content: center;
     }
     .title {
-      margin-bottom: 20px;
-      font-size: 54px;
+      margin-bottom: 48px;
+      font-size: 48px;
       text-align: center;
+    }
+    .grid {
+      display: grid;
+      gap: 0px;
+      align-items: center;
     }
     .row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
+      padding: 10px 80px;
+      width: 100%;
+      box-sizing: border-box;
     }
-    .row div:first-child {
-      font-size: 54px;
+    .name {
+      font-size: 48px;
       cursor: pointer;
-    }
-    .buttons {
+      flex: 2;
+      text-align: left;
       display: flex;
-      gap: 10px;
       align-items: center;
     }
-    .control-row {
-      margin-top: 40px;
+    .vote {
+      font-size: 48px;
+      cursor: pointer;
+      flex: 1;
+      text-align: right;
       display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .control-row {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
+      align-items: center;
     }
     button {
       font-family: 'SimSun', 'Times New Roman', serif;
@@ -64,8 +85,8 @@
 </head>
 <body>
   <div class="container">
-    <div class="title">北京大学青年天文学会<br>2025年选举大会</div>
-    <div id="voteContainer"></div>
+    <div class="title">北京大学青年天文学会2025年选举大会</div>
+    <div id="voteContainer" class="grid"></div>
   </div>
 
   <div class="control-row" id="controlRow">
@@ -73,20 +94,26 @@
     <button onclick="addCandidate()">添加候选人</button>
     <button onclick="removeCandidate()">移除最后一位</button>
     <button onclick="finalizeCandidates()">确定</button>
+    <button onclick="increaseColumns()">增加列数</button>
+    <button onclick="decreaseColumns()">减少列数</button>
   </div>
 
   <script>
     const voteContainer = document.getElementById('voteContainer');
     const controlRow = document.getElementById('controlRow');
     let candidates = [];
+    let columns = 1;
 
     function render() {
       voteContainer.innerHTML = '';
-      candidates.forEach((candidate, index) => {
+      voteContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+      candidates.forEach((candidate) => {
         const row = document.createElement('div');
         row.className = 'row';
 
         const name = document.createElement('div');
+        name.className = 'name';
         name.textContent = candidate.name;
         name.onclick = () => {
           candidate.votes--;
@@ -95,19 +122,15 @@
         };
 
         const vote = document.createElement('div');
-        vote.textContent = candidate.votes + '票';
+        vote.className = 'vote';
+        vote.textContent = candidate.votes + ' 票';
         vote.onclick = () => {
           candidate.votes++;
           render();
         };
 
-        const btnGroup = document.createElement('div');
-        btnGroup.className = 'buttons';
-        btnGroup.appendChild(vote);
-
         row.appendChild(name);
-        row.appendChild(btnGroup);
-
+        row.appendChild(vote);
         voteContainer.appendChild(row);
       });
     }
@@ -128,6 +151,18 @@
 
     function finalizeCandidates() {
       controlRow.remove();
+    }
+
+    function increaseColumns() {
+      columns++;
+      render();
+    }
+
+    function decreaseColumns() {
+      if (columns > 1) {
+        columns--;
+        render();
+      }
     }
   </script>
 </body>
