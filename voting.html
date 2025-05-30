@@ -7,7 +7,7 @@
     body {
       margin: 0;
       background-color: #0000FF;
-      font-family: 'SimSun', 'Times New Roman', serif;
+      font-family: 'Times New Roman', 'SimSun', serif;
       color: white;
       font-size: 36px;
       display: flex;
@@ -27,13 +27,15 @@
       justify-content: center;
     }
     .title {
-      margin-bottom: 48px;
-      font-size: 48px;
+      margin-bottom: 40px;
+      font-size: 54px;
       text-align: center;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
     .grid {
       display: grid;
-      gap: 0px;
+      gap: 20px;
       align-items: center;
     }
     .row {
@@ -47,7 +49,7 @@
       overflow: hidden;
     }
     .name {
-      font-size: 48px;
+      font-size: 54px;
       cursor: pointer;
       flex: 2;
       text-align: left;
@@ -55,7 +57,7 @@
       align-items: center;
     }
     .vote {
-      font-size: 48px;
+      font-size: 54px;
       cursor: pointer;
       flex: 1;
       text-align: right;
@@ -72,22 +74,27 @@
       align-items: center;
     }
     button {
-      font-family: 'SimSun', 'Times New Roman', serif;
+      font-family: 'Times New Roman', 'SimSun', serif;
       font-size: 28px;
       background: none;
       border: none;
       color: white;
       cursor: pointer;
     }
-    input {
+    input, textarea {
       font-size: 28px;
-      font-family: 'SimSun', 'Times New Roman', serif;
+      font-family: 'Times New Roman', 'SimSun', serif;
+    }
+    textarea {
+      resize: none;
+      height: 2.5em;
+      line-height: 1.2em;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="title">北京大学青年天文学会2025年选举大会</div>
+    <div class="title" id="mainTitle">北京大学青年天文学会2025年选举大会</div>
     <div id="voteContainer" class="grid"></div>
   </div>
 
@@ -99,10 +106,16 @@
     <button onclick="increaseColumns()">增加列数</button>
     <button onclick="decreaseColumns()">减少列数</button>
   </div>
+  <div class="control-row" id="controlRow2">
+    <textarea id="customTitle" placeholder="自定义标题"></textarea>
+    <button onclick="updateTitle()">设置标题</button>
+  </div>
 
   <script>
     const voteContainer = document.getElementById('voteContainer');
     const controlRow = document.getElementById('controlRow');
+    const controlRow2 = document.getElementById('controlRow2');
+    const mainTitle = document.getElementById('mainTitle');
     let candidates = [];
     let columns = 1;
 
@@ -153,6 +166,7 @@
 
     function finalizeCandidates() {
       controlRow.remove();
+      controlRow2.remove();
     }
 
     function increaseColumns() {
@@ -164,6 +178,13 @@
       if (columns > 1) {
         columns--;
         render();
+      }
+    }
+
+    function updateTitle() {
+      const newTitle = document.getElementById('customTitle').value.trim();
+      if (newTitle) {
+        mainTitle.textContent = newTitle;
       }
     }
   </script>
